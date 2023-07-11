@@ -8,7 +8,8 @@ clc;        % Clear the Screen
 clear;      % Clear the Workspace
 close all;	% Close all Figures
 
-openBCI_serial_port = '/dev/cu.usbserial-DM01N5OD'; % Change it accordingly
+openBCI_serial_port = '/dev/cu.usbserial-XXXXXXXX'; % For Mac Operating System | Change the serial port accordingly
+% openBCI_serial_port = 'COM3'; % For Windows Operating System | Change the serial port accordingly
 file_name = 'data/EyesRealTimeSubject1Session1.csv';
 fs = 256;
 data_save = [];
@@ -24,17 +25,13 @@ params.serial_port = openBCI_serial_port;
 board_shim = BoardShim(-1, params); % BoardIds.SYNTHETIC_BOARD (-1)  |  BoardIds.CYTON_BOARD (0)
 
 % Band-pass filter variables
-lowerRange_bp = 1.0;
-upperRange_bp = 40.0;
-center_freq_bp = (upperRange_bp + lowerRange_bp) / 2.0;
-band_width_bp = upperRange_bp - lowerRange_bp;
+start_freq_bp = 1.0;
+stop_freq_bp = 40.0;
 filter_order_bp = 3;
 % Band-stop filter variables
-lowerRange_bs = 49.0;
-upperRange_bs = 52.0;
+start_freq_bs = 49.0;
+stop_freq_bs = 52.0;
 filter_order_bs = 3;
-center_freq_bs = (upperRange_bs + lowerRange_bs) / 2.0;
-band_width_bs = upperRange_bs - lowerRange_bs;
 
 nfft = DataFilter.get_nearest_power_of_two(fs);
 
@@ -60,11 +57,11 @@ try
 
         % 3: Signal Denoising
         % - 1-40Hz Band-pass Filter
-        ch_o1_denoised = DataFilter.perform_bandpass(ch_o1, fs, center_freq_bp, band_width_bp, filter_order_bp, int32(FilterTypes.BUTTERWORTH), 0.0);
-        ch_o2_denoised = DataFilter.perform_bandpass(ch_o2, fs, center_freq_bp, band_width_bp, filter_order_bp, int32(FilterTypes.BUTTERWORTH), 0.0);
+        ch_o1_denoised = DataFilter.perform_bandpass(ch_o1, fs, start_freq_bp, stop_freq_bp, filter_order_bp, int32(FilterTypes.BUTTERWORTH), 0.0);
+        ch_o2_denoised = DataFilter.perform_bandpass(ch_o2, fs, start_freq_bp, stop_freq_bp, filter_order_bp, int32(FilterTypes.BUTTERWORTH), 0.0);
         % - 49-52Hz Band-stop Filter
-        ch_o1_denoised = DataFilter.perform_bandstop(ch_o1_denoised, fs, center_freq_bs, band_width_bs, filter_order_bs, int32(FilterTypes.BUTTERWORTH), 0.0);
-        ch_o2_denoised = DataFilter.perform_bandstop(ch_o2_denoised, fs, center_freq_bs, band_width_bs, filter_order_bs, int32(FilterTypes.BUTTERWORTH), 0.0);
+        ch_o1_denoised = DataFilter.perform_bandstop(ch_o1_denoised, fs, start_freq_bs, stop_freq_bs, filter_order_bs, int32(FilterTypes.BUTTERWORTH), 0.0);
+        ch_o2_denoised = DataFilter.perform_bandstop(ch_o2_denoised, fs, start_freq_bs, stop_freq_bs, filter_order_bs, int32(FilterTypes.BUTTERWORTH), 0.0);
         % ~ Remove 1st and 5th second data from each segment for EOG (eye movement for opening/closing)
         % TODO for your practice
         % Hint: out of 1:segment_data_size data points of each segment, take fs+1:segment_data_size-fs
@@ -73,13 +70,13 @@ try
         % - α (Alpha) Power and β (Beta) Power for O1
         original_data = ch_o1_denoised;
         detrended = DataFilter.detrend(original_data, int32(DetrendOperations.LINEAR));
-        [ampls, freqs] = DataFilter.get_psd_welch(detrended, nfft, nfft / 2, fs, int32(WindowFunctions.HANNING));
+        [ampls, freqs] = DataFilter.get_psd_welch(detrended, nfft, nfft / 2, fs, int32(WindowOperations.HANNING));
         ch_o1_feature_alpha_power = DataFilter.get_band_power(ampls, freqs, 8.0, 13.0);
         ch_o1_feature_beta_power = DataFilter.get_band_power(ampls, freqs, 14.0, 30.0);
         % - α (Alpha) Power and β (Beta) Power for O2
         original_data = ch_o2_denoised;
         detrended = DataFilter.detrend(original_data, int32(DetrendOperations.LINEAR));
-        [ampls, freqs] = DataFilter.get_psd_welch(detrended, nfft, nfft / 2, fs, int32(WindowFunctions.HANNING));
+        [ampls, freqs] = DataFilter.get_psd_welch(detrended, nfft, nfft / 2, fs, int32(WindowOperations.HANNING));
         ch_o2_feature_alpha_power = DataFilter.get_band_power(ampls, freqs, 8.0, 13.0);
         ch_o2_feature_beta_power = DataFilter.get_band_power(ampls, freqs, 14.0, 30.0);
 
