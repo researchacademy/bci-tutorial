@@ -1,4 +1,5 @@
-openBCI_serial_port = '/dev/cu.usbserial-DM01N5OD'; % Change it accordingly
+openBCI_serial_port = '/dev/cu.usbserial-XXXXXXXX'; % For Mac Operating System | Change the serial port accordingly
+% openBCI_serial_port = 'COM3'; % For Windows Operating System | Change the serial port accordingly
 file_name = 'data/EyesSubject1Session9.csv';
 fs = 256;
 data_save = [];

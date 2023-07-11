@@ -29,52 +29,40 @@ temp_raw = data(starts:ends, selected_channel)';
 temp = temp_raw;
 
 % % - 49-52Hz Band-stop Filter
-% lowerRange_bs = 49.0;
-% upperRange_bs = 52.0;
+% start_freq_bs = 49.0;
+% stop_freq_bs = 52.0;
 % filter_order_bs = 3;
-% center_freq_bs = (upperRange_bs + lowerRange_bs) / 2.0;
-% band_width_bs = upperRange_bs - lowerRange_bs;
-% temp = DataFilter.perform_bandstop(temp, fs, center_freq_bs, band_width_bs, filter_order_bs, int32(FilterTypes.BUTTERWORTH), 0.0);
+% temp = DataFilter.perform_bandstop(temp, fs, start_freq_bs, stop_freq_bs, filter_order_bs, int32(FilterTypes.BUTTERWORTH), 0.0);
 
 % - Delta Band
-lowerRange_bp = 0.5;
-upperRange_bp = 4.0;
-center_freq_bp = (upperRange_bp + lowerRange_bp) / 2.0;
-band_width_bp = upperRange_bp - lowerRange_bp;
+start_freq_bp = 0.5;
+stop_freq_bp = 4.0;
 filter_order_bp = 3;
-delta = DataFilter.perform_bandpass(temp, fs, center_freq_bp, band_width_bp, filter_order_bp, int32(FilterTypes.BUTTERWORTH), 0.0);
+delta = DataFilter.perform_bandpass(temp, fs, start_freq_bp, stop_freq_bp, filter_order_bp, int32(FilterTypes.BUTTERWORTH), 0.0);
 
 % - Theta Band
-lowerRange_bp = 4.0;
-upperRange_bp = 8.0;
-center_freq_bp = (upperRange_bp + lowerRange_bp) / 2.0;
-band_width_bp = upperRange_bp - lowerRange_bp;
+start_freq_bp = 4.0;
+stop_freq_bp = 8.0;
 filter_order_bp = 3;
-theta = DataFilter.perform_bandpass(temp, fs, center_freq_bp, band_width_bp, filter_order_bp, int32(FilterTypes.BUTTERWORTH), 0.0);
+theta = DataFilter.perform_bandpass(temp, fs, start_freq_bp, stop_freq_bp, filter_order_bp, int32(FilterTypes.BUTTERWORTH), 0.0);
 
 % - Alpha Band
-lowerRange_bp = 8.0;
-upperRange_bp = 13.0;
-center_freq_bp = (upperRange_bp + lowerRange_bp) / 2.0;
-band_width_bp = upperRange_bp - lowerRange_bp;
+start_freq_bp = 8.0;
+stop_freq_bp = 13.0;
 filter_order_bp = 3;
-alpha = DataFilter.perform_bandpass(temp, fs, center_freq_bp, band_width_bp, filter_order_bp, int32(FilterTypes.BUTTERWORTH), 0.0);
+alpha = DataFilter.perform_bandpass(temp, fs, start_freq_bp, stop_freq_bp, filter_order_bp, int32(FilterTypes.BUTTERWORTH), 0.0);
 
 % - Beta Band
-lowerRange_bp = 13.0;
-upperRange_bp = 30.0;
-center_freq_bp = (upperRange_bp + lowerRange_bp) / 2.0;
-band_width_bp = upperRange_bp - lowerRange_bp;
+start_freq_bp = 13.0;
+stop_freq_bp = 30.0;
 filter_order_bp = 3;
-beta = DataFilter.perform_bandpass(temp, fs, center_freq_bp, band_width_bp, filter_order_bp, int32(FilterTypes.BUTTERWORTH), 0.0);
+beta = DataFilter.perform_bandpass(temp, fs, start_freq_bp, stop_freq_bp, filter_order_bp, int32(FilterTypes.BUTTERWORTH), 0.0);
 
 % - Gamma Band
-lowerRange_bp = 30.0;
-upperRange_bp = 100.0;
-center_freq_bp = (upperRange_bp + lowerRange_bp) / 2.0;
-band_width_bp = upperRange_bp - lowerRange_bp;
+start_freq_bp = 30.0;
+stop_freq_bp = 100.0;
 filter_order_bp = 3;
-gamma = DataFilter.perform_bandpass(temp, fs, center_freq_bp, band_width_bp, filter_order_bp, int32(FilterTypes.BUTTERWORTH), 0.0);
+gamma = DataFilter.perform_bandpass(temp, fs, start_freq_bp, stop_freq_bp, filter_order_bp, int32(FilterTypes.BUTTERWORTH), 0.0);
 
 
 

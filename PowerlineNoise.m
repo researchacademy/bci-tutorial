@@ -25,7 +25,7 @@ original_data = data(1:end, selected_channel)';
 % - Get Power Spectral Density (PSD) using Welch method
 nfft = DataFilter.get_nearest_power_of_two(fs);
 detrended = DataFilter.detrend(original_data, int32(DetrendOperations.LINEAR));
-[ampls_original, freqs_original] = DataFilter.get_psd_welch(detrended, nfft, nfft / 2, fs, int32(WindowFunctions.HANNING));
+[ampls_original, freqs_original] = DataFilter.get_psd_welch(detrended, nfft, nfft / 2, fs, int32(WindowOperations.HANNING));
 
 figure
 plot(freqs_original, ampls_original);
@@ -33,15 +33,13 @@ title('Frequency Domain with the Powerline Noise');
 
 
 % - 49-54Hz Band-stop Filter
-lowerRange_bs = 49.0;
-upperRange_bs = 52.0;
+start_freq_bs = 49.0;
+stop_freq_bs = 52.0;
 filter_order_bs = 3;
-center_freq_bs = (upperRange_bs + lowerRange_bs) / 2.0;
-band_width_bs = upperRange_bs - lowerRange_bs;
-denoised_data = DataFilter.perform_bandstop(original_data, fs, center_freq_bs, band_width_bs, filter_order_bs, int32(FilterTypes.BUTTERWORTH), 0.0);
+denoised_data = DataFilter.perform_bandstop(original_data, fs, start_freq_bs, stop_freq_bs, filter_order_bs, int32(FilterTypes.BUTTERWORTH), 0.0);
 
 detrended = DataFilter.detrend(denoised_data, int32(DetrendOperations.LINEAR));
-[ampls_denoised, freqs_denoised] = DataFilter.get_psd_welch(detrended, nfft, nfft / 2, fs, int32(WindowFunctions.HANNING));
+[ampls_denoised, freqs_denoised] = DataFilter.get_psd_welch(detrended, nfft, nfft / 2, fs, int32(WindowOperations.HANNING));
 
 figure
 plot(freqs_denoised, ampls_denoised);
