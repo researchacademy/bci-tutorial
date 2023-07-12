@@ -1,4 +1,5 @@
-openBCI_serial_port = '/dev/cu.usbserial-XXXXXXXX'; % For Mac Operating System | Change the serial port accordingly
+openBCI_serial_port = '/dev/cu.usbserial-DM01N5OD'; % For Mac Operating System | Change the serial port accordingly
+% openBCI_serial_port = '/dev/cu.usbserial-XXXXXXXX'; % For Mac Operating System | Change the serial port accordingly
 % openBCI_serial_port = 'COM3'; % For Windows Operating System | Change the serial port accordingly
 file_name = 'data/EyesSubject1Session9.csv';
 fs = 256;
@@ -12,7 +13,8 @@ BoardShim.set_log_file('brainflow.log');
 BoardShim.enable_dev_board_logger();
 params = BrainFlowInputParams();
 params.serial_port = openBCI_serial_port;
-board_shim = BoardShim(0, params); % BoardIds.SYNTHETIC_BOARD (-1)  |  BoardIds.CYTON_BOARD (0)
+board_shim = BoardShim(-1, params); % BoardIds.SYNTHETIC_BOARD (-1)  |  BoardIds.CYTON_BOARD (0)
+preset = int32(BrainFlowPresets.DEFAULT_PRESET);
 
 try
     board_shim.prepare_session();
@@ -29,7 +31,7 @@ try
         pause(window_size);
 
         % Signal Acquisition
-        data = board_shim.get_board_data(board_shim.get_board_data_count());
+        data = board_shim.get_board_data(board_shim.get_board_data_count(preset), preset);
         data_save = [data_save data];
         disp(strcat('Elapsed: ', num2str(i_segment*window_size), ' Seconds'));
     end

@@ -8,7 +8,8 @@ clc;        % Clear the Screen
 clear;      % Clear the Workspace
 close all;	% Close all Figures
 
-openBCI_serial_port = '/dev/cu.usbserial-XXXXXXXX'; % For Mac Operating System | Change the serial port accordingly
+openBCI_serial_port = '/dev/cu.usbserial-DM01N5OD'; % For Mac Operating System | Change the serial port accordingly
+% openBCI_serial_port = '/dev/cu.usbserial-XXXXXXXX'; % For Mac Operating System | Change the serial port accordingly
 % openBCI_serial_port = 'COM3'; % For Windows Operating System | Change the serial port accordingly
 file_name = 'data/EyesRealTimeSubject1Session1.csv';
 fs = 256;
@@ -23,6 +24,7 @@ BoardShim.enable_dev_board_logger();
 params = BrainFlowInputParams();
 params.serial_port = openBCI_serial_port;
 board_shim = BoardShim(-1, params); % BoardIds.SYNTHETIC_BOARD (-1)  |  BoardIds.CYTON_BOARD (0)
+preset = int32(BrainFlowPresets.DEFAULT_PRESET);
 
 % Band-pass filter variables
 start_freq_bp = 1.0;
@@ -47,7 +49,7 @@ try
         disp(strcat('Elapsed: ', num2str(i_segment*window_size), ' Seconds'));
 
         % 1: Signal Acquisition
-        data = board_shim.get_board_data(board_shim.get_board_data_count());
+        data = board_shim.get_board_data(board_shim.get_board_data_count(preset), preset);
         data_save = [data_save data];
 
         % 2: Signal Preprocessing
@@ -111,6 +113,4 @@ catch ME
     board_shim.release_session();
     disp(ME)
 end    
-
-
 
